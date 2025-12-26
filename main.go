@@ -7,12 +7,12 @@ import (
 	"github.com/ACaiCat/memo/internal"
 	"github.com/ACaiCat/memo/internal/dal"
 	"github.com/ACaiCat/memo/pkg/config"
+	"github.com/hertz-contrib/swagger"
+	swaggerFiles "github.com/swaggo/files"
 
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/hertz-contrib/logger/accesslog"
-	"github.com/hertz-contrib/swagger"
-	swaggerFiles "github.com/swaggo/files"
 )
 
 // @title Memo
@@ -35,14 +35,16 @@ import (
 // @description				Description for what is this security definition being used
 func main() {
 	h := server.Default(server.WithHostPorts(config.GetConfig().ServerConfig.Listen))
-	hlog.SetLevel(hlog.LevelDebug)
+
+	if config.GetConfig().ServerConfig.Debug {
+		hlog.SetLevel(hlog.LevelDebug)
+		url := swagger.URL("http://localhost:8888/swagger/doc.json")
+		h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
+	}
+
 	dal.InitDal()
 	h.Use(accesslog.New())
 
-	url := swagger.URL("http://localhost:8888/swagger/doc.json")
-	h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
-
 	router.SetupRouter(h, dal.DB, dal.Cache)
-
 	h.Spin()
 }

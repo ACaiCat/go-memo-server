@@ -3,4 +3,5 @@
 type ServerConfig struct {
 	Listen     string `yaml:"listen"`
 	JWTSecrete string `yaml:"jwt_secrete"`
+	Debug      bool   `yaml:"debug"`
 }
