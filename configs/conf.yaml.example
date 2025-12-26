@@ -6,4 +6,5 @@ redis_config:
     db: 0
 server_config:
     listen: ":8888"
+    jwt_secrete: "example"
     debug: false

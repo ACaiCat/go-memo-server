@@ -2,7 +2,7 @@
 
 import (
 	"github.com/ACaiCat/memo/pkg/config"
-	
+
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/go-redis/redis"
 )
