@@ -64,7 +64,7 @@ func (h *MemoHandler) MemoMark(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 
-		hlog.Errorf("failed to mark memo: %v\n", err)
+		hlog.Errorf("Failed to mark memo: %v\n", err)
 		resp.Status = consts.StatusInternalServerError
 		resp.Msg = "internal server error"
 		c.JSON(resp.Status, resp)

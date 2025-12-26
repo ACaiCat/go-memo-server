@@ -65,7 +65,7 @@ func (h *MemoHandler) MemoQuery(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 
-		hlog.Errorf("failed to search memo: %v\n", err)
+		hlog.Errorf("Failed to search memo: %v\n", err)
 		resp.Status = consts.StatusInternalServerError
 		resp.Msg = "internal server error"
 		c.JSON(resp.Status, resp)

@@ -57,7 +57,7 @@ func (h *MemoHandler) MemoCreate(ctx context.Context, c *app.RequestContext) {
 
 	memo, err := h.memoService.Create(req.UserID, req.Title, req.Content, startTime, endTime)
 	if err != nil {
-		hlog.Errorf("failed to create memo: %v\n", err)
+		hlog.Errorf("Failed to create memo: %v\n", err)
 		resp.Status = consts.StatusInternalServerError
 		resp.Msg = "internal server error"
 		c.JSON(resp.Status, resp)
