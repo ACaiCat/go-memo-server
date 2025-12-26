@@ -3,7 +3,6 @@
 import (
 	"errors"
 
-	"github.com/ACaiCat/memo/internal/model"
 	"github.com/ACaiCat/memo/pkg/config"
 
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -27,7 +26,5 @@ func InitPostgre() *gorm.DB {
 	if err != nil {
 		hlog.Fatalf("Failed to connect DB: %v", err)
 	}
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Memo{})
 	return db
 }
