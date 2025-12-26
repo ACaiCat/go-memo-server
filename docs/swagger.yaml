@@ -1,0 +1,459 @@
+basePath: /
+definitions:
+  handler.Pagination:
+    properties:
+      page:
+        description: Page 当前页码
+        example: 1
+        type: integer
+      per_page:
+        description: PerPage 每页数量
+        example: 20
+        type: integer
+      total:
+        description: Total 总记录数
+        example: 100
+        type: integer
+    type: object
+  handler.memoCreateReqResp:
+    properties:
+      memo:
+        allOf:
+        - $ref: '#/definitions/model.Memo'
+        description: Memo 备忘录
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.memoDeleteReq:
+    properties:
+      memo_ids:
+        description: MemoIDs 备忘录ID
+        items:
+          type: integer
+        type: array
+    required:
+    - memo_ids
+    type: object
+  handler.memoDeleteResp:
+    properties:
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.memoMarkReq:
+    properties:
+      memo_ids:
+        description: MemoIDs 备忘录ID
+        items:
+          type: integer
+        type: array
+      status:
+        allOf:
+        - $ref: '#/definitions/model.Status'
+        description: Status 状态
+    required:
+    - memo_ids
+    - status
+    type: object
+  handler.memoMarkResp:
+    properties:
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.memoQueryResp:
+    properties:
+      memos:
+        description: Memos 满足条件的备忘录
+        items:
+          $ref: '#/definitions/model.Memo'
+        type: array
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.userLoginResp:
+    properties:
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+      token:
+        description: Token JWT令牌
+        type: string
+    type: object
+  handler.userRefreshResp:
+    properties:
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+      token:
+        description: Token JWT令牌
+        type: string
+    type: object
+  handler.userRegisterResp:
+    properties:
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+      token:
+        description: Token JWT令牌
+        type: string
+    type: object
+  model.Memo:
+    properties:
+      content:
+        description: Content 内容
+        type: string
+      created_at:
+        description: CreatedAt 创建时间
+        type: string
+      end_time:
+        description: EndTime 结束时间
+        type: string
+      id:
+        description: ID 备忘录ID
+        type: integer
+      start_time:
+        description: StartTime 开始时间
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/model.Status'
+        description: Status 备忘录状态
+      title:
+        description: Title 标题
+        type: string
+      user_id:
+        description: UserID 用户ID
+        type: integer
+    type: object
+  model.Status:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - StatusAny
+    - StatusPending
+    - StatusCompleted
+host: localhost:8888
+info:
+  contact:
+    name: ACaiCat
+    url: https://github.com/ACaiCat
+  description: A demo of memo api
+  license:
+    name: The MIT License (MIT)
+    url: https://mit-license.org/
+  title: Memo
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 处理用户登录并返回JWT令牌
+      parameters:
+      - description: Email 用户邮箱
+        in: formData
+        name: email
+        type: string
+      - description: Password 用户密码
+        in: formData
+        name: password
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/handler.userLoginResp'
+        "400":
+          description: 请求参数错误
+        "403":
+          description: 邮箱或密码错误
+        "500":
+          description: 服务器内部错误
+      summary: 用户登录
+      tags:
+      - 认证
+  /api/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 刷新用户的JWT令牌
+      parameters:
+      - description: Authorization 认证字符串
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 令牌刷新成功
+          schema:
+            $ref: '#/definitions/handler.userRefreshResp'
+        "400":
+          description: 请求参数错误或Token格式不正确
+        "500":
+          description: 服务器内部错误
+      summary: 刷新用户登录令牌
+      tags:
+      - 认证
+  /api/auth/register:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 处理用户注册并返回JWT令牌
+      parameters:
+      - description: Email 用户邮箱
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Name 用户名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Password 用户密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/handler.userRegisterResp'
+        "400":
+          description: 请求参数错误
+        "409":
+          description: 邮箱或用户名已被使用
+        "500":
+          description: 服务器内部错误
+      summary: 用户注册
+      tags:
+      - 认证
+  /api/users/{user_id}/memos/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建一条新的备忘录
+      parameters:
+      - description: Content 内容
+        in: header
+        name: content
+        required: true
+        type: string
+      - description: EndTimestamp 结束时间戳
+        in: header
+        name: end_timestamp
+        required: true
+        type: integer
+      - description: StartTimestamp 开始时间戳
+        in: header
+        name: start_timestamp
+        required: true
+        type: integer
+      - description: Title 标题
+        in: header
+        name: title
+        required: true
+        type: string
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/handler.memoCreateReqResp'
+        "500":
+          description: 服务器内部错误
+      security:
+      - ApiKeyAuth: []
+      summary: 创建备忘录
+      tags:
+      - 备忘录
+  /api/users/{user_id}/memos/delete:
+    post:
+      consumes:
+      - application/json
+      description: 删除备忘录
+      parameters:
+      - description: 删除请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.memoDeleteReq'
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            $ref: '#/definitions/handler.memoDeleteResp'
+        "500":
+          description: 服务器内部错误
+      security:
+      - ApiKeyAuth: []
+      summary: 删除备忘录
+      tags:
+      - 备忘录
+  /api/users/{user_id}/memos/mark:
+    post:
+      consumes:
+      - application/json
+      description: 标记备忘录的状态
+      parameters:
+      - description: 标记请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.memoMarkReq'
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改成功
+          schema:
+            $ref: '#/definitions/handler.memoMarkResp'
+        "400":
+          description: 备忘录状态无效
+        "500":
+          description: 服务器内部错误
+      security:
+      - ApiKeyAuth: []
+      summary: 标记备忘录
+      tags:
+      - 备忘录
+  /api/users/{user_id}/memos/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询满足要求的备忘录
+      parameters:
+      - description: Page 页码
+        example: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: PerPage 每页条目数
+        example: 5
+        in: query
+        name: per_page
+        type: integer
+      - description: Query 关键词
+        example: ""
+        in: query
+        name: query
+        type: string
+      - default: 0
+        description: Status 状态
+        enum:
+        - 0
+        - 1
+        - 2
+        example: 0
+        in: query
+        name: status
+        required: true
+        type: integer
+        x-enum-varnames:
+        - StatusAny
+        - StatusPending
+        - StatusCompleted
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            $ref: '#/definitions/handler.memoQueryResp'
+        "400":
+          description: 备忘录状态无效
+        "500":
+          description: 服务器内部错误
+      security:
+      - ApiKeyAuth: []
+      summary: 查询备忘录
+      tags:
+      - 备忘录
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    description: Description for what is this security definition being used
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

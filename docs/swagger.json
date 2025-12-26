@@ -1,0 +1,678 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "A demo of memo api",
+        "title": "Memo",
+        "contact": {
+            "name": "ACaiCat",
+            "url": "https://github.com/ACaiCat"
+        },
+        "license": {
+            "name": "The MIT License (MIT)",
+            "url": "https://mit-license.org/"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8888",
+    "basePath": "/",
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "description": "处理用户登录并返回JWT令牌",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email 用户邮箱",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password 用户密码",
+                        "name": "password",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.userLoginResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误"
+                    },
+                    "403": {
+                        "description": "邮箱或密码错误"
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "description": "刷新用户的JWT令牌",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证"
+                ],
+                "summary": "刷新用户登录令牌",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization 认证字符串",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "令牌刷新成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.userRefreshResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或Token格式不正确"
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "description": "处理用户注册并返回JWT令牌",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "认证"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email 用户邮箱",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name 用户名",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password 用户密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.userRegisterResp"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误"
+                    },
+                    "409": {
+                        "description": "邮箱或用户名已被使用"
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/memos/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一条新的备忘录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "备忘录"
+                ],
+                "summary": "创建备忘录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Content 内容",
+                        "name": "content",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "EndTimestamp 结束时间戳",
+                        "name": "end_timestamp",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "StartTimestamp 开始时间戳",
+                        "name": "start_timestamp",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title 标题",
+                        "name": "title",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoCreateReqResp"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/memos/delete": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除备忘录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "备忘录"
+                ],
+                "summary": "删除备忘录",
+                "parameters": [
+                    {
+                        "description": "删除请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoDeleteReq"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoDeleteResp"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/memos/mark": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "标记备忘录的状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "备忘录"
+                ],
+                "summary": "标记备忘录",
+                "parameters": [
+                    {
+                        "description": "标记请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoMarkReq"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "修改成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoMarkResp"
+                        }
+                    },
+                    "400": {
+                        "description": "备忘录状态无效"
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/memos/query": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询满足要求的备忘录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "备忘录"
+                ],
+                "summary": "查询备忘录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "description": "Page 页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "example": 5,
+                        "description": "PerPage 每页条目数",
+                        "name": "per_page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "",
+                        "description": "Query 关键词",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "integer",
+                        "default": 0,
+                        "example": 0,
+                        "x-enum-varnames": [
+                            "StatusAny",
+                            "StatusPending",
+                            "StatusCompleted"
+                        ],
+                        "description": "Status 状态",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoQueryResp"
+                        }
+                    },
+                    "400": {
+                        "description": "备忘录状态无效"
+                    },
+                    "500": {
+                        "description": "服务器内部错误"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.Pagination": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "Page 当前页码",
+                    "type": "integer",
+                    "example": 1
+                },
+                "per_page": {
+                    "description": "PerPage 每页数量",
+                    "type": "integer",
+                    "example": 20
+                },
+                "total": {
+                    "description": "Total 总记录数",
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "handler.memoCreateReqResp": {
+            "type": "object",
+            "properties": {
+                "memo": {
+                    "description": "Memo 备忘录",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Memo"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.memoDeleteReq": {
+            "type": "object",
+            "required": [
+                "memo_ids"
+            ],
+            "properties": {
+                "memo_ids": {
+                    "description": "MemoIDs 备忘录ID",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "handler.memoDeleteResp": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.memoMarkReq": {
+            "type": "object",
+            "required": [
+                "memo_ids",
+                "status"
+            ],
+            "properties": {
+                "memo_ids": {
+                    "description": "MemoIDs 备忘录ID",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "status": {
+                    "description": "Status 状态",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Status"
+                        }
+                    ]
+                }
+            }
+        },
+        "handler.memoMarkResp": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.memoQueryResp": {
+            "type": "object",
+            "properties": {
+                "memos": {
+                    "description": "Memos 满足条件的备忘录",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Memo"
+                    }
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.userLoginResp": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                },
+                "token": {
+                    "description": "Token JWT令牌",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.userRefreshResp": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                },
+                "token": {
+                    "description": "Token JWT令牌",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.userRegisterResp": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                },
+                "token": {
+                    "description": "Token JWT令牌",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Memo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "Content 内容",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "CreatedAt 创建时间",
+                    "type": "string"
+                },
+                "end_time": {
+                    "description": "EndTime 结束时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID 备忘录ID",
+                    "type": "integer"
+                },
+                "start_time": {
+                    "description": "StartTime 开始时间",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Status 备忘录状态",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Status"
+                        }
+                    ]
+                },
+                "title": {
+                    "description": "Title 标题",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "UserID 用户ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Status": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "StatusAny",
+                "StatusPending",
+                "StatusCompleted"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Description for what is this security definition being used",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
