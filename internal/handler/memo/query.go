@@ -80,6 +80,7 @@ func (h *MemoHandler) MemoQuery(ctx context.Context, c *app.RequestContext) {
 		},
 		Pagination: &handler.Pagination{
 			Page:    req.Page,
+			MaxPage: (total + req.PerPage - 1) / req.PerPage,
 			PerPage: req.PerPage,
 			Total:   total,
 		},

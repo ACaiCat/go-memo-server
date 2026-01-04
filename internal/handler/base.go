@@ -16,6 +16,8 @@ type BaseResp[T any] struct {
 type Pagination struct {
 	// Page 当前页码
 	Page int `json:"page" example:"1"`
+	// MaxPage 最大页数
+	MaxPage int `json:"max_page" example:"5"`
 	// PerPage 每页数量
 	PerPage int `json:"per_page" example:"20"`
 	// Total 总记录数
