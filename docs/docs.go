@@ -53,7 +53,7 @@ const docTemplate = `{
                     "200": {
                         "description": "登录成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.userLoginResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_userLoginResp"
                         }
                     },
                     "400": {
@@ -94,7 +94,7 @@ const docTemplate = `{
                     "200": {
                         "description": "令牌刷新成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.userRefreshResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_userRefreshResp"
                         }
                     },
                     "400": {
@@ -146,7 +146,7 @@ const docTemplate = `{
                     "200": {
                         "description": "注册成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.userRegisterResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_userRegisterResp"
                         }
                     },
                     "400": {
@@ -220,7 +220,7 @@ const docTemplate = `{
                     "200": {
                         "description": "创建成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.memoCreateReqResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_memoCreateReqResp"
                         }
                     },
                     "500": {
@@ -269,7 +269,7 @@ const docTemplate = `{
                     "200": {
                         "description": "删除成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.memoDeleteResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_memoDeleteResp"
                         }
                     },
                     "500": {
@@ -318,7 +318,7 @@ const docTemplate = `{
                     "200": {
                         "description": "修改成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.memoMarkResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_memoMarkResp"
                         }
                     },
                     "400": {
@@ -351,14 +351,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "default": 1,
                         "example": 1,
                         "description": "Page 页码",
                         "name": "page",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "integer",
+                        "default": 5,
                         "example": 5,
                         "description": "PerPage 每页条目数",
                         "name": "per_page",
@@ -402,7 +403,7 @@ const docTemplate = `{
                     "200": {
                         "description": "查询成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.memoQueryResp"
+                            "$ref": "#/definitions/handler.BaseResp-handler_memoMarkResp"
                         }
                     },
                     "400": {
@@ -416,9 +417,200 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.BaseResp-handler_memoCreateReqResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.memoCreateReqResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.BaseResp-handler_memoDeleteResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.memoDeleteResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.BaseResp-handler_memoMarkResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.memoMarkResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.BaseResp-handler_userLoginResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.userLoginResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.BaseResp-handler_userRefreshResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.userRefreshResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "handler.BaseResp-handler_userRegisterResp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Data 数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.userRegisterResp"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "Msg 消息描述",
+                    "type": "string",
+                    "example": "success"
+                },
+                "pagination": {
+                    "description": "Pagination 分页信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Pagination"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Status 状态码",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
         "handler.Pagination": {
             "type": "object",
             "properties": {
+                "max_page": {
+                    "description": "MaxPage 最大页数",
+                    "type": "integer",
+                    "example": 5
+                },
                 "page": {
                     "description": "Page 当前页码",
                     "type": "integer",
@@ -446,16 +638,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/model.Memo"
                         }
                     ]
-                },
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
                 }
             }
         },
@@ -475,19 +657,7 @@ const docTemplate = `{
             }
         },
         "handler.memoDeleteResp": {
-            "type": "object",
-            "properties": {
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                }
-            }
+            "type": "object"
         },
         "handler.memoMarkReq": {
             "type": "object",
@@ -514,82 +684,24 @@ const docTemplate = `{
             }
         },
         "handler.memoMarkResp": {
-            "type": "object",
-            "properties": {
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                }
-            }
-        },
-        "handler.memoQueryResp": {
-            "type": "object",
-            "properties": {
-                "memos": {
-                    "description": "Memos 满足条件的备忘录",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Memo"
-                    }
-                },
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "pagination": {
-                    "description": "Pagination 分页信息",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/handler.Pagination"
-                        }
-                    ]
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                }
-            }
+            "type": "object"
         },
         "handler.userLoginResp": {
             "type": "object",
             "properties": {
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                },
                 "token": {
                     "description": "Token JWT令牌",
                     "type": "string"
+                },
+                "user_id": {
+                    "description": "UserID 用户ID",
+                    "type": "integer"
                 }
             }
         },
         "handler.userRefreshResp": {
             "type": "object",
             "properties": {
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                },
                 "token": {
                     "description": "Token JWT令牌",
                     "type": "string"
@@ -599,19 +711,13 @@ const docTemplate = `{
         "handler.userRegisterResp": {
             "type": "object",
             "properties": {
-                "msg": {
-                    "description": "Msg 消息描述",
-                    "type": "string",
-                    "example": "success"
-                },
-                "status": {
-                    "description": "Status 状态码",
-                    "type": "integer",
-                    "example": 200
-                },
                 "token": {
                     "description": "Token JWT令牌",
                     "type": "string"
+                },
+                "user_id": {
+                    "description": "UserID 用户ID",
+                    "type": "integer"
                 }
             }
         },

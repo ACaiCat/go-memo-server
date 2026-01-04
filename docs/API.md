@@ -1,773 +1,374 @@
----
-title: Memo
-language_tabs:
-  - shell: Shell
-  - http: HTTP
-  - javascript: JavaScript
-  - ruby: Ruby
-  - python: Python
-  - php: PHP
-  - java: Java
-  - go: Go
-toc_footers: []
-includes: []
-search: true
-code_clipboard: true
-highlight_theme: darkula
-headingLevel: 2
-generator: "@tarslib/widdershins v4.0.30"
+# 备忘录接口文档
+
+## 接口概览（总计7个）
+
+### 备忘录
+
+| **路径**                                         | **功能**   | **请求方式** | **是否需要鉴权** |
+|--------------------------------------------------|------------|--------------|------------------|
+| [/api/users/{user_id}/memos/create](#创建备忘录) | 创建备忘录 | POST         | true             |
+| [/api/users/{user_id}/memos/delete](#删除备忘录) | 删除备忘录 | POST         | true             |
+| [/api/users/{user_id}/memos/mark](#标记备忘录)   | 标记备忘录 | POST         | true             |
+| [/api/users/{user_id}/memos/query](#查询备忘录)  | 查询备忘录 | GET          | true             |
+
+### 认证
+
+| **路径**                               | **功能**         | **请求方式** | **是否需要鉴权** |
+|----------------------------------------|------------------|--------------|------------------|
+| [/api/auth/login](#用户登录)           | 用户登录         | POST         | false            |
+| [/api/auth/refresh](#刷新用户登录令牌) | 刷新用户登录令牌 | POST         | false            |
+| [/api/auth/register](#用户注册)        | 用户注册         | POST         | false            |
+
+## 接口详情
+
+### 备忘录
+
+### 创建备忘录
+
+[返回概览](#备忘录)
 
 ---
 
-# Memo
+POST /api/users/{user_id}/memos/create  
+Content-Type: application/json
 
-A demo of memo api
+请求参数：
 
-Base URLs:
+| **来源** | **参数**        | **描述**                  | **类型** | **约束** | **说明** |
+|----------|-----------------|---------------------------|----------|----------|----------|
+| header   | content         | Content 内容              | string   | 必填     |          |
+| header   | end_timestamp   | EndTimestamp 结束时间戳   | integer  | 必填     |          |
+| header   | start_timestamp | StartTimestamp 开始时间戳 | integer  | 必填     |          |
+| header   | title           | Title 标题                | string   | 必填     |          |
+| path     | user_id         | 用户ID                    | integer  | 必填     |          |
 
-Web: <a href="https://github.com/ACaiCat">ACaiCat</a> 
-License: <a href="https://mit-license.org/">The MIT License (MIT)</a>
-
-# Authentication
-
-* API Key (ApiKeyAuth)
-    - Parameter Name: **Authorization**, in: header. Description for what is this security definition being used
-
-# 认证
-
-## POST 用户登录
-
-POST /api/auth/login
-
-处理用户登录并返回JWT令牌
-
-> Body 请求参数
-
-```yaml
-email: ""
-password: ""
+请求示例：
 
 ```
+Header:
+content: content
+end_timestamp: 1
+start_timestamp: 1
+title: title
+```
 
-### 请求参数
+---
 
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|body|body|object| 否 |none|
-|» email|body|string| 否 |Email 用户邮箱|
-|» password|body|string| 否 |Password 用户密码|
+Content-Type: application/json
 
-> 返回示例
+响应参数：
 
-> 200 Response
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
+  "data": null,
   "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-```
-
-### 返回结果
-
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|登录成功|[handler.userLoginResp](#schemahandler.userloginresp)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|请求参数错误|Inline|
-|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|邮箱或密码错误|Inline|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
-
-### 返回数据结构
-
-状态码 **200**
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
-|» token|string|false|none||Token JWT令牌|
-
-## POST 刷新用户登录令牌
-
-POST /api/auth/refresh
-
-刷新用户的JWT令牌
-
-### 请求参数
-
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|Authorization|header|string| 是 |Authorization 认证字符串|
-
-> 返回示例
-
-> 200 Response
-
-```json
-{
-  "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-```
-
-### 返回结果
-
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|令牌刷新成功|[handler.userRefreshResp](#schemahandler.userrefreshresp)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|请求参数错误或Token格式不正确|Inline|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
-
-### 返回数据结构
-
-状态码 **200**
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
-|» token|string|false|none||Token JWT令牌|
-
-## POST 用户注册
-
-POST /api/auth/register
-
-处理用户注册并返回JWT令牌
-
-> Body 请求参数
-
-```yaml
-email: ""
-name: ""
-password: ""
-
-```
-
-### 请求参数
-
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|body|body|object| 否 |none|
-|» email|body|string| 是 |Email 用户邮箱|
-|» name|body|string| 是 |Name 用户名|
-|» password|body|string| 是 |Password 用户密码|
-
-> 返回示例
-
-> 200 Response
-
-```json
-{
-  "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-```
-
-### 返回结果
-
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|注册成功|[handler.userRegisterResp](#schemahandler.userregisterresp)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|请求参数错误|Inline|
-|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|邮箱或用户名已被使用|Inline|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
-
-### 返回数据结构
-
-状态码 **200**
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
-|» token|string|false|none||Token JWT令牌|
-
-# 备忘录
-
-## POST 创建备忘录
-
-POST /api/users/{user_id}/memos/create
-
-创建一条新的备忘录
-
-### 请求参数
-
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|user_id|path|integer| 是 |用户ID|
-|content|header|string| 是 |Content 内容|
-|end_timestamp|header|integer| 是 |EndTimestamp 结束时间戳|
-|start_timestamp|header|integer| 是 |StartTimestamp 开始时间戳|
-|title|header|string| 是 |Title 标题|
-
-> 返回示例
-
-> 200 Response
-
-```json
-{
-  "memo": {
-    "content": "string",
-    "created_at": "string",
-    "end_time": "string",
-    "id": 0,
-    "start_time": "string",
-    "status": 0,
-    "title": "string",
-    "user_id": 0
-  },
-  "msg": "success",
+  "pagination": null,
   "status": 200
 }
 ```
 
-### 返回结果
+### 删除备忘录
 
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|创建成功|[handler.memoCreateReqResp](#schemahandler.memocreatereqresp)|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
+[返回概览](#备忘录)
 
-### 返回数据结构
+---
 
-状态码 **200**
+POST /api/users/{user_id}/memos/delete  
+Content-Type: application/json
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» memo|[model.Memo](#schemamodel.memo)|false|none||Memo 备忘录|
-|»» content|string|false|none||Content 内容|
-|»» created_at|string|false|none||CreatedAt 创建时间|
-|»» end_time|string|false|none||EndTime 结束时间|
-|»» id|integer|false|none||ID 备忘录ID|
-|»» start_time|string|false|none||StartTime 开始时间|
-|»» status|[model.Status](#schemamodel.status)|false|none||Status 备忘录状态|
-|»» title|string|false|none||Title 标题|
-|»» user_id|integer|false|none||UserID 用户ID|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
+请求参数：
 
-#### 枚举值
+| **来源** | **参数** | **描述**         | **类型**      | **约束** | **说明** |
+|----------|----------|------------------|---------------|----------|----------|
+| body     | memo_ids | MemoIDs 备忘录ID | integer array | 必填     |          |
+| path     | user_id  | 用户ID           | integer       | 必填     |          |
 
-|属性|值|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-
-## POST 删除备忘录
-
-POST /api/users/{user_id}/memos/delete
-
-删除备忘录
-
-> Body 请求参数
+请求示例：
 
 ```json
 {
   "memo_ids": [
-    0
+    1
   ]
 }
 ```
 
-### 请求参数
+---
 
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|user_id|path|integer| 是 |用户ID|
-|body|body|[handler.memoDeleteReq](#schemahandler.memodeletereq)| 是 |none|
+Content-Type: application/json
 
-> 返回示例
+响应参数：
 
-> 200 Response
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
+  "data": null,
   "msg": "success",
+  "pagination": null,
   "status": 200
 }
 ```
 
-### 返回结果
+### 标记备忘录
 
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|删除成功|[handler.memoDeleteResp](#schemahandler.memodeleteresp)|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
+[返回概览](#备忘录)
 
-### 返回数据结构
+---
 
-状态码 **200**
+POST /api/users/{user_id}/memos/mark  
+Content-Type: application/json
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
+请求参数：
 
-## POST 标记备忘录
+| **来源** | **参数** | **描述**         | **类型**      | **约束** | **说明** |
+|----------|----------|------------------|---------------|----------|----------|
+| body     | memo_ids | MemoIDs 备忘录ID | integer array | 必填     |          |
+| body     | status   | Status 状态      | object        | 必填     |          |
+| path     | user_id  | 用户ID           | integer       | 必填     |          |
 
-POST /api/users/{user_id}/memos/mark
-
-标记备忘录的状态
-
-> Body 请求参数
+请求示例：
 
 ```json
 {
   "memo_ids": [
-    0
+    1
   ],
-  "status": 0
+  "status": null
 }
 ```
 
-### 请求参数
+---
 
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|user_id|path|integer| 是 |用户ID|
-|body|body|[handler.memoMarkReq](#schemahandler.memomarkreq)| 是 |none|
+Content-Type: application/json
 
-> 返回示例
+响应参数：
 
-> 200 Response
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
+  "data": null,
   "msg": "success",
+  "pagination": null,
   "status": 200
 }
 ```
 
-### 返回结果
+### 查询备忘录
 
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|修改成功|[handler.memoMarkResp](#schemahandler.memomarkresp)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|备忘录状态无效|Inline|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
+[返回概览](#备忘录)
 
-### 返回数据结构
-
-状态码 **200**
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» msg|string|false|none||Msg 消息描述|
-|» status|integer|false|none||Status 状态码|
-
-## GET 查询备忘录
+---
 
 GET /api/users/{user_id}/memos/query
 
-查询满足要求的备忘录
+请求参数：
 
-### 请求参数
+| **来源** | **参数** | **描述**           | **类型** | **约束** | **说明** |
+|----------|----------|--------------------|----------|----------|----------|
+| query    | page     | Page 页码          | integer  | 非必填   |          |
+| query    | per_page | PerPage 每页条目数 | integer  | 非必填   |          |
+| query    | query    | Query 关键词       | string   | 非必填   |          |
+| query    | status   | Status 状态        | integer  | 必填     |          |
+| path     | user_id  | 用户ID             | integer  | 必填     |          |
 
-|名称|位置|类型|必选|说明|
-|---|---|---|---|---|
-|user_id|path|integer| 是 |用户ID|
-|page|query|integer| 是 |Page 页码|
-|per_page|query|integer| 否 |PerPage 每页条目数|
-|query|query|string| 否 |Query 关键词|
-|status|query|integer| 是 |Status 状态|
+请求示例：
 
-#### 枚举值
+```
+Query:
+/api/users/{user_id}/memos/query?page=1&per_page=1&query=query&status=1
+```
 
-|属性|值|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
+---
 
-> 返回示例
+Content-Type: application/json
 
-> 200 Response
+响应参数：
+
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
-  "memos": [
-    {
-      "content": "string",
-      "created_at": "string",
-      "end_time": "string",
-      "id": 0,
-      "start_time": "string",
-      "status": 0,
-      "title": "string",
-      "user_id": 0
-    }
-  ],
+  "data": null,
   "msg": "success",
-  "pagination": {
-    "page": 1,
-    "per_page": 20,
-    "total": 100
-  },
+  "pagination": null,
   "status": 200
 }
 ```
 
-### 返回结果
+### 认证
 
-|状态码|状态码含义|说明|数据模型|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|查询成功|[handler.memoQueryResp](#schemahandler.memoqueryresp)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|备忘录状态无效|Inline|
-|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|Inline|
+### 用户登录
 
-### 返回数据结构
+[返回概览](#认证)
 
-状态码 **200**
+---
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» memos|[[model.Memo](#schemamodel.memo)]|false|none||Memos 满足条件的备忘录|
-|»» content|string|false|none||Content 内容|
-|»» created_at|string|false|none||CreatedAt 创建时间|
-|»» end_time|string|false|none||EndTime 结束时间|
-|»» id|integer|false|none||ID 备忘录ID|
-|»» start_time|string|false|none||StartTime 开始时间|
-|»» status|[model.Status](#schemamodel.status)|false|none||Status 备忘录状态|
-|»» title|string|false|none||Title 标题|
-|»» user_id|integer|false|none||UserID 用户ID|
-|» msg|string|false|none||Msg 消息描述|
-|» pagination|[handler.Pagination](#schemahandler.pagination)|false|none||Pagination 分页信息|
-|»» page|integer|false|none||Page 当前页码|
-|»» per_page|integer|false|none||PerPage 每页数量|
-|»» total|integer|false|none||Total 总记录数|
-|» status|integer|false|none||Status 状态码|
+POST /api/auth/login  
+Content-Type: application/x-www-form-urlencoded
 
-#### 枚举值
+请求参数：
 
-|属性|值|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
+| **来源** | **参数** | **描述**          | **类型** | **约束** | **说明** |
+|----------|----------|-------------------|----------|----------|----------|
+| formData | email    | Email 用户邮箱    | string   | 非必填   |          |
+| formData | password | Password 用户密码 | string   | 非必填   |          |
 
-# 数据模型
-
-<h2 id="tocS_handler.Pagination">handler.Pagination</h2>
-
-<a id="schemahandler.pagination"></a>
-<a id="schema_handler.Pagination"></a>
-<a id="tocShandler.pagination"></a>
-<a id="tocshandler.pagination"></a>
-
-```json
-{
-  "page": 1,
-  "per_page": 20,
-  "total": 100
-}
+请求示例：
 
 ```
+Form Data:
+email: email
+password: password
+```
 
-### 属性
+---
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|page|integer|false|none||Page 当前页码|
-|per_page|integer|false|none||PerPage 每页数量|
-|total|integer|false|none||Total 总记录数|
+Content-Type: application/json
 
-<h2 id="tocS_handler.memoCreateReqResp">handler.memoCreateReqResp</h2>
+响应参数：
 
-<a id="schemahandler.memocreatereqresp"></a>
-<a id="schema_handler.memoCreateReqResp"></a>
-<a id="tocShandler.memocreatereqresp"></a>
-<a id="tocshandler.memocreatereqresp"></a>
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
-  "memo": {
-    "content": "string",
-    "created_at": "string",
-    "end_time": "string",
-    "id": 0,
-    "start_time": "string",
-    "status": 0,
-    "title": "string",
-    "user_id": 0
-  },
+  "data": null,
   "msg": "success",
+  "pagination": null,
   "status": 200
 }
-
 ```
 
-### 属性
+### 刷新用户登录令牌
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|memo|[model.Memo](#schemamodel.memo)|false|none||Memo 备忘录|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
+[返回概览](#认证)
 
-<h2 id="tocS_handler.memoDeleteReq">handler.memoDeleteReq</h2>
+---
 
-<a id="schemahandler.memodeletereq"></a>
-<a id="schema_handler.memoDeleteReq"></a>
-<a id="tocShandler.memodeletereq"></a>
-<a id="tocshandler.memodeletereq"></a>
+POST /api/auth/refresh  
+Content-Type: application/json
+
+请求参数：
+
+| **来源** | **参数**      | **描述**                 | **类型** | **约束** | **说明** |
+|----------|---------------|--------------------------|----------|----------|----------|
+| header   | Authorization | Authorization 认证字符串 | string   | 必填     |          |
+
+请求示例：
+
+```
+Header:
+Authorization: Authorization
+```
+
+---
+
+Content-Type: application/json
+
+响应参数：
+
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
-  "memo_ids": [
-    0
-  ]
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|memo_ids|[integer]|true|none||MemoIDs 备忘录ID|
-
-<h2 id="tocS_handler.memoDeleteResp">handler.memoDeleteResp</h2>
-
-<a id="schemahandler.memodeleteresp"></a>
-<a id="schema_handler.memoDeleteResp"></a>
-<a id="tocShandler.memodeleteresp"></a>
-<a id="tocshandler.memodeleteresp"></a>
-
-```json
-{
+  "data": null,
   "msg": "success",
+  "pagination": null,
   "status": 200
 }
-
 ```
 
-### 属性
+### 用户注册
 
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
+[返回概览](#认证)
 
-<h2 id="tocS_handler.memoMarkReq">handler.memoMarkReq</h2>
+---
 
-<a id="schemahandler.memomarkreq"></a>
-<a id="schema_handler.memoMarkReq"></a>
-<a id="tocShandler.memomarkreq"></a>
-<a id="tocshandler.memomarkreq"></a>
+POST /api/auth/register  
+Content-Type: application/x-www-form-urlencoded
+
+请求参数：
+
+| **来源** | **参数** | **描述**          | **类型** | **约束** | **说明** |
+|----------|----------|-------------------|----------|----------|----------|
+| formData | email    | Email 用户邮箱    | string   | 必填     |          |
+| formData | name     | Name 用户名       | string   | 必填     |          |
+| formData | password | Password 用户密码 | string   | 必填     |          |
+
+请求示例：
+
+```
+Form Data:
+email: email
+name: name
+password: password
+```
+
+---
+
+Content-Type: application/json
+
+响应参数：
+
+| **参数**   | **描述**            | **类型** | **说明** |
+|------------|---------------------|----------|----------|
+| data       | Data 数据           | object   |          |
+| msg        | Msg 消息描述        | string   |          |
+| pagination | Pagination 分页信息 | object   |          |
+| status     | Status 状态码       | integer  |          |
+
+响应示例：
 
 ```json
 {
-  "memo_ids": [
-    0
-  ],
-  "status": 0
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|memo_ids|[integer]|true|none||MemoIDs 备忘录ID|
-|status|[model.Status](#schemamodel.status)|true|none||Status 状态|
-
-<h2 id="tocS_handler.memoMarkResp">handler.memoMarkResp</h2>
-
-<a id="schemahandler.memomarkresp"></a>
-<a id="schema_handler.memoMarkResp"></a>
-<a id="tocShandler.memomarkresp"></a>
-<a id="tocshandler.memomarkresp"></a>
-
-```json
-{
+  "data": null,
   "msg": "success",
+  "pagination": null,
   "status": 200
 }
-
 ```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
-
-<h2 id="tocS_handler.memoQueryResp">handler.memoQueryResp</h2>
-
-<a id="schemahandler.memoqueryresp"></a>
-<a id="schema_handler.memoQueryResp"></a>
-<a id="tocShandler.memoqueryresp"></a>
-<a id="tocshandler.memoqueryresp"></a>
-
-```json
-{
-  "memos": [
-    {
-      "content": "string",
-      "created_at": "string",
-      "end_time": "string",
-      "id": 0,
-      "start_time": "string",
-      "status": 0,
-      "title": "string",
-      "user_id": 0
-    }
-  ],
-  "msg": "success",
-  "pagination": {
-    "page": 1,
-    "per_page": 20,
-    "total": 100
-  },
-  "status": 200
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|memos|[[model.Memo](#schemamodel.memo)]|false|none||Memos 满足条件的备忘录|
-|msg|string|false|none||Msg 消息描述|
-|pagination|[handler.Pagination](#schemahandler.pagination)|false|none||Pagination 分页信息|
-|status|integer|false|none||Status 状态码|
-
-<h2 id="tocS_handler.userLoginResp">handler.userLoginResp</h2>
-
-<a id="schemahandler.userloginresp"></a>
-<a id="schema_handler.userLoginResp"></a>
-<a id="tocShandler.userloginresp"></a>
-<a id="tocshandler.userloginresp"></a>
-
-```json
-{
-  "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
-|token|string|false|none||Token JWT令牌|
-
-<h2 id="tocS_handler.userRefreshResp">handler.userRefreshResp</h2>
-
-<a id="schemahandler.userrefreshresp"></a>
-<a id="schema_handler.userRefreshResp"></a>
-<a id="tocShandler.userrefreshresp"></a>
-<a id="tocshandler.userrefreshresp"></a>
-
-```json
-{
-  "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
-|token|string|false|none||Token JWT令牌|
-
-<h2 id="tocS_handler.userRegisterResp">handler.userRegisterResp</h2>
-
-<a id="schemahandler.userregisterresp"></a>
-<a id="schema_handler.userRegisterResp"></a>
-<a id="tocShandler.userregisterresp"></a>
-<a id="tocshandler.userregisterresp"></a>
-
-```json
-{
-  "msg": "success",
-  "status": 200,
-  "token": "string"
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|msg|string|false|none||Msg 消息描述|
-|status|integer|false|none||Status 状态码|
-|token|string|false|none||Token JWT令牌|
-
-<h2 id="tocS_model.Memo">model.Memo</h2>
-
-<a id="schemamodel.memo"></a>
-<a id="schema_model.Memo"></a>
-<a id="tocSmodel.memo"></a>
-<a id="tocsmodel.memo"></a>
-
-```json
-{
-  "content": "string",
-  "created_at": "string",
-  "end_time": "string",
-  "id": 0,
-  "start_time": "string",
-  "status": 0,
-  "title": "string",
-  "user_id": 0
-}
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|content|string|false|none||Content 内容|
-|created_at|string|false|none||CreatedAt 创建时间|
-|end_time|string|false|none||EndTime 结束时间|
-|id|integer|false|none||ID 备忘录ID|
-|start_time|string|false|none||StartTime 开始时间|
-|status|[model.Status](#schemamodel.status)|false|none||Status 备忘录状态|
-|title|string|false|none||Title 标题|
-|user_id|integer|false|none||UserID 用户ID|
-
-<h2 id="tocS_model.Status">model.Status</h2>
-
-<a id="schemamodel.status"></a>
-<a id="schema_model.Status"></a>
-<a id="tocSmodel.status"></a>
-<a id="tocsmodel.status"></a>
-
-```json
-0
-
-```
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|*anonymous*|integer|false|none||none|
-
-#### 枚举值
-
-|属性|值|
-|---|---|
-|*anonymous*|0|
-|*anonymous*|1|
-|*anonymous*|2|
-

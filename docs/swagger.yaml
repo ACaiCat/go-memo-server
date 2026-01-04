@@ -1,7 +1,125 @@
 basePath: /
 definitions:
+  handler.BaseResp-handler_memoCreateReqResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.memoCreateReqResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.BaseResp-handler_memoDeleteResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.memoDeleteResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.BaseResp-handler_memoMarkResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.memoMarkResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.BaseResp-handler_userLoginResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.userLoginResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.BaseResp-handler_userRefreshResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.userRefreshResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
+  handler.BaseResp-handler_userRegisterResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/handler.userRegisterResp'
+        description: Data 数据
+      msg:
+        description: Msg 消息描述
+        example: success
+        type: string
+      pagination:
+        allOf:
+        - $ref: '#/definitions/handler.Pagination'
+        description: Pagination 分页信息
+      status:
+        description: Status 状态码
+        example: 200
+        type: integer
+    type: object
   handler.Pagination:
     properties:
+      max_page:
+        description: MaxPage 最大页数
+        example: 5
+        type: integer
       page:
         description: Page 当前页码
         example: 1
@@ -21,14 +139,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/model.Memo'
         description: Memo 备忘录
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
     type: object
   handler.memoDeleteReq:
     properties:
@@ -41,15 +151,6 @@ definitions:
     - memo_ids
     type: object
   handler.memoDeleteResp:
-    properties:
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
     type: object
   handler.memoMarkReq:
     properties:
@@ -67,77 +168,30 @@ definitions:
     - status
     type: object
   handler.memoMarkResp:
-    properties:
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
-    type: object
-  handler.memoQueryResp:
-    properties:
-      memos:
-        description: Memos 满足条件的备忘录
-        items:
-          $ref: '#/definitions/model.Memo'
-        type: array
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      pagination:
-        allOf:
-        - $ref: '#/definitions/handler.Pagination'
-        description: Pagination 分页信息
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
     type: object
   handler.userLoginResp:
     properties:
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
       token:
         description: Token JWT令牌
         type: string
+      user_id:
+        description: UserID 用户ID
+        type: integer
     type: object
   handler.userRefreshResp:
     properties:
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
       token:
         description: Token JWT令牌
         type: string
     type: object
   handler.userRegisterResp:
     properties:
-      msg:
-        description: Msg 消息描述
-        example: success
-        type: string
-      status:
-        description: Status 状态码
-        example: 200
-        type: integer
       token:
         description: Token JWT令牌
         type: string
+      user_id:
+        description: UserID 用户ID
+        type: integer
     type: object
   model.Memo:
     properties:
@@ -209,7 +263,7 @@ paths:
         "200":
           description: 登录成功
           schema:
-            $ref: '#/definitions/handler.userLoginResp'
+            $ref: '#/definitions/handler.BaseResp-handler_userLoginResp'
         "400":
           description: 请求参数错误
         "403":
@@ -236,7 +290,7 @@ paths:
         "200":
           description: 令牌刷新成功
           schema:
-            $ref: '#/definitions/handler.userRefreshResp'
+            $ref: '#/definitions/handler.BaseResp-handler_userRefreshResp'
         "400":
           description: 请求参数错误或Token格式不正确
         "500":
@@ -271,7 +325,7 @@ paths:
         "200":
           description: 注册成功
           schema:
-            $ref: '#/definitions/handler.userRegisterResp'
+            $ref: '#/definitions/handler.BaseResp-handler_userRegisterResp'
         "400":
           description: 请求参数错误
         "409":
@@ -318,7 +372,7 @@ paths:
         "200":
           description: 创建成功
           schema:
-            $ref: '#/definitions/handler.memoCreateReqResp'
+            $ref: '#/definitions/handler.BaseResp-handler_memoCreateReqResp'
         "500":
           description: 服务器内部错误
       security:
@@ -349,7 +403,7 @@ paths:
         "200":
           description: 删除成功
           schema:
-            $ref: '#/definitions/handler.memoDeleteResp'
+            $ref: '#/definitions/handler.BaseResp-handler_memoDeleteResp'
         "500":
           description: 服务器内部错误
       security:
@@ -380,7 +434,7 @@ paths:
         "200":
           description: 修改成功
           schema:
-            $ref: '#/definitions/handler.memoMarkResp'
+            $ref: '#/definitions/handler.BaseResp-handler_memoMarkResp'
         "400":
           description: 备忘录状态无效
         "500":
@@ -396,13 +450,14 @@ paths:
       - application/json
       description: 查询满足要求的备忘录
       parameters:
-      - description: Page 页码
+      - default: 1
+        description: Page 页码
         example: 1
         in: query
         name: page
-        required: true
         type: integer
-      - description: PerPage 每页条目数
+      - default: 5
+        description: PerPage 每页条目数
         example: 5
         in: query
         name: per_page
@@ -438,7 +493,7 @@ paths:
         "200":
           description: 查询成功
           schema:
-            $ref: '#/definitions/handler.memoQueryResp'
+            $ref: '#/definitions/handler.BaseResp-handler_memoMarkResp'
         "400":
           description: 备忘录状态无效
         "500":
