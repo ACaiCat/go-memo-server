@@ -8,7 +8,7 @@
 
 ## API文档
 
-用`swag`来自动生成`Swagger`文档，虽然效果也许有点一言难尽
+用`swag`来自动生成`Swagger`文档，效果一般般，但是其实感觉对Hertz的支持不太好
 - [Swagger API](docs/API.md)
 
 ## 项目结构
@@ -34,27 +34,29 @@
 │   └── 📄 conf.yaml.example
 │
 ├── 📁 internal/
-│   ├── 📁 dal/                 # 数据访问层
-│   │   ├── 📁 cache/
-│   │   │   ├── 📄 cache.go     # 自己封装的RedisClient
-│   │   │   └── 📄 redis.go
-│   │   ├── 📁 db/
-│   │   │   └── 📄 postgre.go
-│   │   └── 📄 dal.go
-│   │
 │   ├── 📁 handler/             # 请求处理层
 │   │   ├── 📁 auth/            # 认证
 │   │   ├── 📁 memo/            # 备忘录
 │   │   └── 📄 base.go
 │   │
 │   ├── 📁 model/               # 数据模型
-│   ├── 📁 mw/                  # 中间件
-│   │   └── 📄 jwt.go
-│   │
 │   ├── 📁 repository/          # 仓储层
 │   ├── 📁 service/             # 业务逻辑层
 │   └── 📄 router.go            # 路由
 │
 └── 📁 pkg/                     # 可公开使用的包 (好怪)
-    └── 📁 config/              # 配置文件处理
+   ├── 📁 mw/                  # 中间件
+   │   └── 📄 jwt.go
+   │
+   ├── 📁 dal/                 # 数据访问层
+   │   ├── 📁 cache/
+   │   │   ├── 📄 cache.go     # 自己封装的RedisClient
+   │   │   └── 📄 redis.go
+   │   │
+   │   ├── 📁 db/
+   │   │   └── 📄 postgre.go
+   │   │
+   │   └── 📄 dal.go
+   └── 📁 config/              # 配置文件处理
+    
 ```
