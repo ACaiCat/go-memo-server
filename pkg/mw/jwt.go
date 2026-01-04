@@ -1,4 +1,4 @@
-﻿package mw
+package mw
 
 import (
 	"context"
@@ -30,7 +30,7 @@ type jwtAuthReq struct {
 func JWTAuth(ctx context.Context, c *app.RequestContext) {
 	var req jwtAuthReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp{
+		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp[any]{
 			Status: consts.StatusBadRequest,
 			Msg:    err.Error(),
 		})
@@ -40,7 +40,7 @@ func JWTAuth(ctx context.Context, c *app.RequestContext) {
 	authHeader := req.Authorization
 	token, found := strings.CutPrefix(authHeader, "Bearer ")
 	if !found || len(token) == 0 {
-		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp{
+		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp[any]{
 			Status: consts.StatusBadRequest,
 			Msg:    "miss token",
 		})
@@ -49,28 +49,28 @@ func JWTAuth(ctx context.Context, c *app.RequestContext) {
 	err := ValidateJWT(req.UserID, token)
 	if err != nil {
 		if errors.Is(err, ErrTokenExpired) {
-			c.AbortWithStatusJSON(consts.StatusUnauthorized, handler.BaseResp{
+			c.AbortWithStatusJSON(consts.StatusUnauthorized, handler.BaseResp[any]{
 				Status: consts.StatusUnauthorized,
 				Msg:    err.Error(),
 			})
 			return
 		}
 		if errors.Is(err, ErrUserNotMatch) {
-			c.AbortWithStatusJSON(consts.StatusUnauthorized, handler.BaseResp{
+			c.AbortWithStatusJSON(consts.StatusUnauthorized, handler.BaseResp[any]{
 				Status: consts.StatusUnauthorized,
 				Msg:    err.Error(),
 			})
 			return
 		}
 		if errors.Is(err, ErrTokenInvalid) {
-			c.AbortWithStatusJSON(consts.StatusForbidden, handler.BaseResp{
+			c.AbortWithStatusJSON(consts.StatusForbidden, handler.BaseResp[any]{
 				Status: consts.StatusForbidden,
 				Msg:    err.Error(),
 			})
 			return
 		}
 		log.Printf("failed to validate user jwt: %v", err)
-		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp{
+		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp[any]{
 			Status: consts.StatusInternalServerError,
 			Msg:    err.Error(),
 		})

@@ -1,8 +1,8 @@
-﻿package dal
+package dal
 
 import (
-	"github.com/ACaiCat/memo/internal/dal/cache"
-	"github.com/ACaiCat/memo/internal/dal/db"
+	"github.com/ACaiCat/memo/pkg/dal/cache"
+	"github.com/ACaiCat/memo/pkg/dal/db"
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
 )
