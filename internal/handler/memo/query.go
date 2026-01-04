@@ -20,9 +20,9 @@ type memoQueryReq struct {
 	// Status 状态
 	Status model.Status `query:"status" default:"0" binding:"required" json:"status" example:"0"`
 	// Page 页码
-	Page int `query:"page,required" binding:"required" json:"page" example:"1"`
+	Page int `query:"page,required" json:"page" default:"1" example:"1"`
 	// PerPage 每页条目数
-	PerPage int `query:"per_page,required" json:"per_page" example:"5"`
+	PerPage int `query:"per_page,required" json:"per_page" default:"5" example:"5"`
 }
 
 type memoQueryResp struct {
