@@ -1,13 +1,13 @@
-﻿package repository
+package repository
 
 import (
 	"errors"
 	"fmt"
 	"time"
 
-	"github.com/ACaiCat/memo/internal/dal/cache"
-	"github.com/ACaiCat/memo/internal/dal/db"
 	"github.com/ACaiCat/memo/internal/model"
+	"github.com/ACaiCat/memo/pkg/dal/cache"
+	"github.com/ACaiCat/memo/pkg/dal/db"
 
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/go-redis/redis"

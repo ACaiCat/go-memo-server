@@ -3,9 +3,9 @@ package router
 import (
 	authHandler "github.com/ACaiCat/memo/internal/handler/auth"
 	memoHandler "github.com/ACaiCat/memo/internal/handler/memo"
-	"github.com/ACaiCat/memo/internal/mw"
 	"github.com/ACaiCat/memo/internal/repository"
 	"github.com/ACaiCat/memo/internal/service"
+	"github.com/ACaiCat/memo/pkg/mw"
 
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/go-redis/redis"

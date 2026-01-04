@@ -5,8 +5,8 @@ package main
 import (
 	_ "github.com/ACaiCat/memo/docs"
 	"github.com/ACaiCat/memo/internal"
-	"github.com/ACaiCat/memo/internal/dal"
 	"github.com/ACaiCat/memo/pkg/config"
+	"github.com/ACaiCat/memo/pkg/dal"
 	"github.com/hertz-contrib/swagger"
 	swaggerFiles "github.com/swaggo/files"
 

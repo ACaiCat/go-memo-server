@@ -1,12 +1,12 @@
-﻿package service
+package service
 
 import (
 	"errors"
 	"regexp"
 
 	"github.com/ACaiCat/memo/internal/model"
-	"github.com/ACaiCat/memo/internal/mw"
 	"github.com/ACaiCat/memo/internal/repository"
+	"github.com/ACaiCat/memo/pkg/mw"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,8 +19,8 @@ var (
 )
 
 type UserService interface {
-	Create(email string, name string, password string) (string, error)
-	ValidaUser(email string, password string) (string, error)
+	Create(email string, name string, password string) (string, uint, error)
+	ValidaUser(email string, password string) (string, uint, error)
 }
 
 type userService struct {
@@ -31,30 +31,30 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo: repo}
 }
 
-func (u *userService) Create(email string, name string, password string) (string, error) {
+func (u *userService) Create(email string, name string, password string) (string, uint, error) {
 	if !isValidEmail(email) {
-		return "", ErrInvalidEmail
+		return "", 0, ErrInvalidEmail
 	}
 
 	user, err := u.repo.GetByEmail(email)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	if user != nil {
-		return "", ErrEmailUsed
+		return "", 0, ErrEmailUsed
 	}
 
 	user, err = u.repo.GetByName(name)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	if user != nil {
-		return "", ErrNameUsed
+		return "", 0, ErrNameUsed
 	}
 
 	hash, err := hashPassword(password)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	user = &model.User{
@@ -64,36 +64,36 @@ func (u *userService) Create(email string, name string, password string) (string
 	}
 
 	if err = u.repo.Create(user); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	token, err := mw.NewJWT(user.ID)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return token, err
+	return token, user.ID, err
 }
 
-func (u *userService) ValidaUser(email string, password string) (string, error) {
+func (u *userService) ValidaUser(email string, password string) (string, uint, error) {
 	user, err := u.repo.GetByEmail(email)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	if user == nil {
-		return "", ErrUserNotFound
+		return "", 0, ErrUserNotFound
 	}
 
 	if err = validaPassword(user.Password, password); err != nil {
-		return "", ErrPasswordError
+		return "", 0, ErrPasswordError
 	}
 
 	token, err := mw.NewJWT(user.ID)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return token, nil
+	return token, user.ID, nil
 
 }
 

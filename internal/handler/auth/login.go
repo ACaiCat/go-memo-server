@@ -1,4 +1,4 @@
-﻿package handler
+package handler
 
 import (
 	"context"
@@ -19,9 +19,10 @@ type userLoginReq struct {
 }
 
 type userLoginResp struct {
-	handler.BaseResp
 	// Token JWT令牌
 	Token string `json:"token"`
+	// UserID 用户ID
+	UserID uint `json:"user_id"`
 }
 
 // UserLogin 用户登录
@@ -31,37 +32,43 @@ type userLoginResp struct {
 // @Accept       x-www-form-urlencoded
 // @Produce      json
 // @Param        request formData userLoginReq true "登录请求参数"
-// @Success      200       {object}  userLoginResp  "登录成功"
+// @Success      200       {object}  handler.BaseResp[userLoginResp]  "登录成功"
 // @Failure      400       "请求参数错误"
 // @Failure      403       "邮箱或密码错误"
 // @Failure      500       "服务器内部错误"
 // @Router       /api/auth/login [post]
 func (h *AuthHandler) UserLogin(ctx context.Context, c *app.RequestContext) {
-	resp := new(userLoginResp)
 	req := new(userLoginReq)
 	if err := c.BindAndValidate(req); err != nil {
-		resp.Status = consts.StatusBadRequest
-		resp.Msg = err.Error()
-		c.JSON(resp.Status, resp)
+		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp[userLoginResp]{
+			Status: consts.StatusBadRequest,
+			Msg:    err.Error(),
+		})
 		return
 	}
 
-	token, err := h.userService.ValidaUser(req.Email, req.Password)
-	resp.Token = token
+	token, userID, err := h.userService.ValidaUser(req.Email, req.Password)
 	if err != nil {
 		if errors.Is(err, service.ErrPasswordError) || errors.Is(err, service.ErrUserNotFound) {
 			log.Printf("failed to validate user: %v\n", err)
-			resp.Status = consts.StatusForbidden
-			resp.Msg = "email or password error"
-			c.JSON(resp.Status, resp)
+			c.AbortWithStatusJSON(consts.StatusForbidden, handler.BaseResp[userLoginResp]{
+				Status: consts.StatusForbidden,
+				Msg:    "email or password error",
+			})
 			return
 		}
-		resp.Status = consts.StatusInternalServerError
-		resp.Msg = err.Error()
-		c.JSON(resp.Status, resp)
+		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp[userLoginResp]{
+			Status: consts.StatusInternalServerError,
+			Msg:    err.Error(),
+		})
 		return
 	}
-	resp.Status = consts.StatusOK
-	resp.Msg = "success"
-	c.JSON(resp.Status, resp)
+	c.JSON(consts.StatusInternalServerError, handler.BaseResp[userLoginResp]{
+		Status: consts.StatusOK,
+		Msg:    "success",
+		Data: &userLoginResp{
+			Token:  token,
+			UserID: userID,
+		},
+	})
 }

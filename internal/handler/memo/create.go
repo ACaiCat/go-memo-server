@@ -1,4 +1,4 @@
-﻿package handler
+package handler
 
 import (
 	"context"
@@ -25,7 +25,6 @@ type memoCreateReq struct {
 }
 
 type memoCreateReqResp struct {
-	handler.BaseResp
 	// Memo 备忘录
 	Memo *model.Memo `json:"memo"`
 }
@@ -38,17 +37,17 @@ type memoCreateReqResp struct {
 // @Produce      json
 // @Param        request header  memoCreateReq true "创建请求参数"
 // @Param        user_id   path      int  true  "用户ID"
-// @Success      200       {object}  memoCreateReqResp  "创建成功"
+// @Success      200       {object}  handler.BaseResp[memoCreateReqResp]  "创建成功"
 // @Failure      500       "服务器内部错误"
 // @Security     ApiKeyAuth
 // @Router       /api/users/{user_id}/memos/create [post]
 func (h *MemoHandler) MemoCreate(ctx context.Context, c *app.RequestContext) {
-	resp := new(memoCreateReqResp)
 	req := new(memoCreateReq)
 	if err := c.BindAndValidate(req); err != nil {
-		resp.Status = consts.StatusBadRequest
-		resp.Msg = err.Error()
-		c.JSON(resp.Status, resp)
+		c.AbortWithStatusJSON(consts.StatusBadRequest, handler.BaseResp[memoCreateReqResp]{
+			Status: consts.StatusBadRequest,
+			Msg:    err.Error(),
+		})
 		return
 	}
 
@@ -58,16 +57,21 @@ func (h *MemoHandler) MemoCreate(ctx context.Context, c *app.RequestContext) {
 	memo, err := h.memoService.Create(req.UserID, req.Title, req.Content, startTime, endTime)
 	if err != nil {
 		hlog.Errorf("Failed to create memo: %v\n", err)
-		resp.Status = consts.StatusInternalServerError
-		resp.Msg = "internal server error"
-		c.JSON(resp.Status, resp)
+
+		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp[memoCreateReqResp]{
+			Status: consts.StatusInternalServerError,
+			Msg:    "internal server error",
+		})
 		return
 
 	}
 
-	resp.Memo = memo
-	resp.Msg = "success"
-	resp.Status = consts.StatusOK
-	c.JSON(resp.Status, resp)
+	c.AbortWithStatusJSON(consts.StatusOK, handler.BaseResp[memoCreateReqResp]{
+		Status: consts.StatusOK,
+		Msg:    "success",
+		Data: &memoCreateReqResp{
+			Memo: memo,
+		},
+	})
 
 }
