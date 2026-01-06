@@ -133,6 +133,26 @@ definitions:
         example: 100
         type: integer
     type: object
+  handler.memoCreateReq:
+    properties:
+      content:
+        description: Content 内容
+        type: string
+      end_timestamp:
+        description: EndTimestamp 结束时间戳
+        type: integer
+      start_timestamp:
+        description: StartTimestamp 开始时间戳
+        type: integer
+      title:
+        description: Title 标题
+        type: string
+    required:
+    - content
+    - end_timestamp
+    - start_timestamp
+    - title
+    type: object
   handler.memoCreateReqResp:
     properties:
       memo:
@@ -341,26 +361,12 @@ paths:
       - application/json
       description: 创建一条新的备忘录
       parameters:
-      - description: Content 内容
-        in: header
-        name: content
+      - description: 创建请求参数
+        in: body
+        name: request
         required: true
-        type: string
-      - description: EndTimestamp 结束时间戳
-        in: header
-        name: end_timestamp
-        required: true
-        type: integer
-      - description: StartTimestamp 开始时间戳
-        in: header
-        name: start_timestamp
-        required: true
-        type: integer
-      - description: Title 标题
-        in: header
-        name: title
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/handler.memoCreateReq'
       - description: 用户ID
         in: path
         name: user_id

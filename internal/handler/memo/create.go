@@ -15,13 +15,13 @@ type memoCreateReq struct {
 	// UserID 用户ID
 	UserID uint `path:"user_id,required" swaggerignore:"true"`
 	// Title 标题
-	Title string `header:"title,required" vd:"len($)>0 && len($)< 100"  binding:"required" json:"title"`
+	Title string `json:"title,required" vd:"len($)>0 && len($)< 100"  binding:"required"`
 	// Content 内容
-	Content string `header:"content,required" vd:"len($)>0 && len($)< 5000"  binding:"required" json:"content"`
+	Content string `json:"content,required" vd:"len($)>0 && len($)< 5000"  binding:"required"`
 	// StartTimestamp 开始时间戳
-	StartTimestamp int64 `header:"start_timestamp,required" vd:"$>=1577836800000 && $<=1893456000000"  binding:"required" json:"start_timestamp"`
+	StartTimestamp int64 `json:"start_timestamp,required" vd:"$>=1577836800000 && $<=1893456000000"  binding:"required"`
 	// EndTimestamp 结束时间戳
-	EndTimestamp int64 `header:"end_timestamp,required" vd:"$>=1577836800000 && $<=1893456000000"  binding:"required" json:"end_timestamp"`
+	EndTimestamp int64 `json:"end_timestamp,required" vd:"$>=1577836800000 && $<=1893456000000"  binding:"required"`
 }
 
 type memoCreateReqResp struct {
@@ -35,7 +35,7 @@ type memoCreateReqResp struct {
 // @Tags         备忘录
 // @Accept       json
 // @Produce      json
-// @Param        request header  memoCreateReq true "创建请求参数"
+// @Param        request body memoCreateReq true "创建请求参数"
 // @Param        user_id   path      int  true  "用户ID"
 // @Success      200       {object}  handler.BaseResp[memoCreateReqResp]  "创建成功"
 // @Failure      500       "服务器内部错误"

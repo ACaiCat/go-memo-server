@@ -239,15 +239,23 @@ POST /api/users/{user_id}/memos/create
 
 创建一条新的备忘录
 
+> Body 请求参数
+
+```json
+{
+  "content": "string",
+  "end_timestamp": 0,
+  "start_timestamp": 0,
+  "title": "string"
+}
+```
+
 ### 请求参数
 
 |名称|位置|类型|必选|说明|
 |---|---|---|---|---|
 |user_id|path|integer| 是 |用户ID|
-|content|header|string| 是 |Content 内容|
-|end_timestamp|header|integer| 是 |EndTimestamp 结束时间戳|
-|start_timestamp|header|integer| 是 |StartTimestamp 开始时间戳|
-|title|header|string| 是 |Title 标题|
+|body|body|[handler.memoCreateReq](#schemahandler.memocreatereq)| 是 |none|
 
 > 返回示例
 
@@ -973,4 +981,30 @@ GET /api/users/{user_id}/memos/query
 |*anonymous*|0|
 |*anonymous*|1|
 |*anonymous*|2|
+
+<h2 id="tocS_handler.memoCreateReq">handler.memoCreateReq</h2>
+
+<a id="schemahandler.memocreatereq"></a>
+<a id="schema_handler.memoCreateReq"></a>
+<a id="tocShandler.memocreatereq"></a>
+<a id="tocshandler.memocreatereq"></a>
+
+```json
+{
+  "content": "string",
+  "end_timestamp": 0,
+  "start_timestamp": 0,
+  "title": "string"
+}
+
+```
+
+### 属性
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|content|string|true|none||Content 内容|
+|end_timestamp|integer|true|none||EndTimestamp 结束时间戳|
+|start_timestamp|integer|true|none||StartTimestamp 开始时间戳|
+|title|string|true|none||Title 标题|
 

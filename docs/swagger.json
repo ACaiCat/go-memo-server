@@ -178,32 +178,13 @@
                 "summary": "创建备忘录",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Content 内容",
-                        "name": "content",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "EndTimestamp 结束时间戳",
-                        "name": "end_timestamp",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "StartTimestamp 开始时间戳",
-                        "name": "start_timestamp",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Title 标题",
-                        "name": "title",
-                        "in": "header",
-                        "required": true
+                        "description": "创建请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.memoCreateReq"
+                        }
                     },
                     {
                         "type": "integer",
@@ -622,6 +603,33 @@
                     "description": "Total 总记录数",
                     "type": "integer",
                     "example": 100
+                }
+            }
+        },
+        "handler.memoCreateReq": {
+            "type": "object",
+            "required": [
+                "content",
+                "end_timestamp",
+                "start_timestamp",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "description": "Content 内容",
+                    "type": "string"
+                },
+                "end_timestamp": {
+                    "description": "EndTimestamp 结束时间戳",
+                    "type": "integer"
+                },
+                "start_timestamp": {
+                    "description": "StartTimestamp 开始时间戳",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "Title 标题",
+                    "type": "string"
                 }
             }
         },
