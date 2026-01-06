@@ -60,7 +60,7 @@ func (h *MemoHandler) MemoDelete(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 
-		hlog.Errorf("Failed to delete memo: %v\n", err)
+		hlog.Errorf("failed to delete memo: %v\n", err)
 		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp[memoDeleteResp]{
 			Status: consts.StatusInternalServerError,
 			Msg:    "internal server error",

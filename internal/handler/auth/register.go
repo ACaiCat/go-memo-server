@@ -91,5 +91,4 @@ func (h *AuthHandler) UserRegister(ctx context.Context, c *app.RequestContext) {
 			UserID: userID,
 		},
 	})
-
 }

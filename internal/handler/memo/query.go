@@ -63,7 +63,7 @@ func (h *MemoHandler) MemoQuery(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 
-		hlog.Errorf("Failed to search memo: %v\n", err)
+		hlog.Errorf("failed to search memo: %v\n", err)
 		c.AbortWithStatusJSON(consts.StatusInternalServerError, handler.BaseResp[memoQueryResp]{
 			Status: consts.StatusInternalServerError,
 			Msg:    "internal server error",
